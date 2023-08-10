@@ -1,4 +1,4 @@
-# pixiv desktop
+# nga desktop
 
 ## Getting Started
 
