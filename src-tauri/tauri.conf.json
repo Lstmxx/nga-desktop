@@ -14,7 +14,10 @@
       "all": false,
       "http": {
         "all": true,
-        "request": true
+        "request": true,
+        "scope": [
+          "https://ngabbs.com/*"
+        ]
       }
     },
     "bundle": {

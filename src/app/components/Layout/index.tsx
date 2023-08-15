@@ -1,23 +1,18 @@
 'use client';
 import { useState } from 'react';
-import AppBar from './AppBar';
+import AppBar from './app-bar';
+import Menu from './menu';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [isHoverMenuButton, setIsHoverMenuButton] = useState(false);
   const handleMenuClick = () => {
     setIsOpenMenu((pre) => !pre);
-    setIsHoverMenuButton(false);
   };
   return (
     <>
-      <AppBar
-        isOpenMenu={isOpenMenu}
-        isHoverMenuButton={isHoverMenuButton}
-        onMouseHover={setIsHoverMenuButton}
-        onMenuClick={handleMenuClick}
-      />
-      <div className='flex'>
+      <AppBar isOpenMenu={isOpenMenu} onMenuClick={handleMenuClick} />
+      <Menu isOpenMenu={isOpenMenu} />
+      <div className='flex bg-redwood-100'>
         <div className='grow'>{children}</div>
       </div>
     </>
