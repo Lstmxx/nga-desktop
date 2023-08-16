@@ -4,6 +4,38 @@ import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
 import { useEffect } from 'react';
 
+const getVerificationCode = async () => {
+  const from = 'login';
+  const checkCodeId = `${from}${(Math.random() + '').substring(2)}`;
+  const res = await fetch(
+    `https://ngabbs.com/login_check_code.php?id=${checkCodeId}&from=${from}`,
+    {
+      method: 'GET',
+      mode: 'no-cors',
+      headers: {
+        Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+        Pragma: 'no-cache',
+        'Sec-Fetch-Dest': 'image',
+        'Sec-Fetch-Mode': 'no-cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+        'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': 'Windows',
+      },
+      referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
+      referrerPolicy: 'strict-origin',
+    },
+  );
+  console.log('send');
+  return res;
+};
+
 export interface LoginDialogProps {
   open: boolean;
   onClose: () => void;
@@ -15,12 +47,13 @@ export default function LoginDialog(props: LoginDialogProps) {
   };
 
   const handleGetVerificationCode = async () => {
-    // const data = await fetch('/api/auth/verification-code', { method: 'GET' });
-    // console.log('VerificationCode', data);
+    const img = await getVerificationCode();
+    console.log('VerificationCode', img);
   };
 
   useEffect(() => {
     if (open) {
+      console.log('oh');
       handleGetVerificationCode();
     }
   }, [open]);
