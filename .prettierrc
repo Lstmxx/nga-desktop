@@ -4,8 +4,8 @@
   "singleQuote": true,
   "jsxSingleQuote": true,
   "printWidth": 100,
-  "trailingComma": "all",
-  "useTabs": false,
+  "trailingComma": "es5",
+  "useTabs": true,
   "htmlWhitespaceSensitivity": "strict",
   "jsxBracketSameLine": false,
   "bracketSpacing": true
