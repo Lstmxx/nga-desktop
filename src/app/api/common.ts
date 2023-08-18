@@ -1,4 +1,4 @@
-const BASE_URL = 'https://ngabbs.com';
+const BASE_URL = 'https://bbs.nga.cn/';
 
 export async function http(req: {
 	url: string;
@@ -25,12 +25,18 @@ export async function http(req: {
 	console.log(fetchOptions);
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		const headers = (fetchOptions.headers || {}) as Record<string, string>;
-		Object.keys(headers).forEach((key) => {
-			res.headers.set(key, headers[key]);
-		});
 		console.log([...res.headers.values()]);
-		return res;
+		return new Response(res.body, {
+			status: res.status,
+			statusText: res.statusText,
+			headers: res.headers,
+		});
+	} catch (error) {
+		console.log(error);
+		return new Response(JSON.stringify(error), {
+			status: 500,
+			statusText: 'error',
+		});
 	} finally {
 		clearTimeout(timeoutId);
 	}
