@@ -2,7 +2,7 @@ export enum LOGIN_TYPE {
 	PHONE = 'phone',
 	EMAIL = 'email',
 	ID = 'id',
-	ACCOUNT = '',
+	ACCOUNT = ' ',
 }
 
 export const LOGIN_TYPE_LIST = [

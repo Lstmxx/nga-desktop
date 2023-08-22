@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { http } from '../../common';
-import { LoginForm } from './type';
+import { ILoginForm } from './type';
 
 const URL = 'nuke.php';
 
@@ -23,7 +23,7 @@ const headers = {
 };
 
 export const POST = async (req: NextRequest) => {
-	const requestData: LoginForm = await req.json();
+	const requestData: ILoginForm = await req.json();
 	const data = new FormData();
 	data.append('__lib', 'login');
 	data.append('__output', '1');

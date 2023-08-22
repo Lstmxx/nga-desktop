@@ -1,6 +1,6 @@
 import { LOGIN_TYPE } from '@/app/constant';
 
-export type LoginForm = {
+export interface ILoginForm {
 	/**
 	 * 账号
 	 */
@@ -13,9 +13,9 @@ export type LoginForm = {
 	 * 密码
 	 */
 	password: string;
-};
+}
 
-export interface LoginReq extends LoginForm {
+export interface ILoginReq extends ILoginForm {
 	_lib: string;
 	_output: string;
 	app_id: string;
