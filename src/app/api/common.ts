@@ -4,6 +4,7 @@ export async function http(req: {
 	url: string;
 	method: string;
 	data?: Record<string, string>;
+	formData?: FormData;
 	options?: RequestInit;
 }) {
 	const controller = new AbortController();
@@ -19,10 +20,9 @@ export async function http(req: {
 
 	const fetchOptions: RequestInit = {
 		...(req.options || {}),
-		body: JSON.stringify(req.data),
+		body: req.data ? JSON.stringify(req.data) : req.formData,
 		method: req.method,
 	};
-	console.log(fetchOptions);
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
 		console.log([...res.headers.values()]);

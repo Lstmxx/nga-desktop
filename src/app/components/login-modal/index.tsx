@@ -1,35 +1,6 @@
 'use client';
 import { Button, Dialog, TextField } from '@mui/material';
-import { Control, Controller, useForm } from 'react-hook-form';
-
-type FormInputProps = {
-	name: string;
-	label: string;
-	control: Control;
-	className?: string;
-};
-const FormInput = ({ name, label, control, className }: FormInputProps) => {
-	return (
-		<Controller
-			name={name}
-			control={control}
-			render={({ field: { onChange, value }, fieldState: { error }, formState }) => (
-				<TextField
-					className={className}
-					helperText={error ? error.message : null}
-					size='small'
-					error={!!error}
-					onChange={onChange}
-					value={value}
-					fullWidth
-					label={label}
-					variant='outlined'
-					required
-				/>
-			)}
-		/>
-	);
-};
+import { useForm } from 'react-hook-form';
 
 export interface LoginDialogProps {
 	open: boolean;
@@ -49,7 +20,6 @@ export default function LoginDialog(props: LoginDialogProps) {
 		<Dialog onClose={handleClose} open={open}>
 			<div className='bg-redwood-50 w-96 h-80 p-8'>
 				<form>
-					<FormInput className='mt-6' name='account' label='账号' control={control} />
 					<TextField
 						className='mt-6'
 						size='small'
@@ -64,7 +34,7 @@ export default function LoginDialog(props: LoginDialogProps) {
 						size='small'
 						required
 						fullWidth
-						type='text'
+						type='password'
 						label='密码'
 						variant='outlined'
 					/>
