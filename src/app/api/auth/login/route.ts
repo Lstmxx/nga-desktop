@@ -1,10 +1,6 @@
-import { NextApiRequest } from 'next';
+import { NextRequest } from 'next/server';
 import { http } from '../../common';
 import { LoginForm } from './type';
-
-interface LoginRequest extends NextApiRequest {
-	body: LoginForm;
-}
 
 const URL = 'nuke.php';
 
@@ -26,7 +22,8 @@ const headers = {
 	'sec-ch-ua-platform': '"Windows"',
 };
 
-export const POST = async (req: LoginRequest) => {
+export const POST = async (req: NextRequest) => {
+	const requestData: LoginForm = await req.json();
 	const data = new FormData();
 	data.append('__lib', 'login');
 	data.append('__output', '1');
@@ -35,9 +32,9 @@ export const POST = async (req: LoginRequest) => {
 	data.append('trackid', '');
 	data.append('__act', 'login');
 	data.append('__ngaClientChecksum', '');
-	data.append('name', req.body.name);
-	data.append('type', req.body.type);
-	data.append('password', req.body.password);
+	data.append('name', requestData.name);
+	data.append('type', requestData.type);
+	data.append('password', requestData.password);
 	data.append('__inchst', 'UTF-8');
 	data.append('rid', 'login02601779342219146');
 	data.append('captcha', '009181');
