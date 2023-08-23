@@ -13,6 +13,10 @@ export interface ILoginForm {
 	 * 密码
 	 */
 	password: string;
+	/**
+	 * 验证码
+	 */
+	captcha: string;
 }
 
 export interface ILoginReq extends ILoginForm {
@@ -25,6 +29,5 @@ export interface ILoginReq extends ILoginForm {
 	_ngaClientChecksum: string;
 	__inchst: string;
 	rid: string;
-	captcha: string;
 	prid: string;
 }

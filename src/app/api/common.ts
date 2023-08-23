@@ -20,12 +20,11 @@ export async function http(req: {
 
 	const fetchOptions: RequestInit = {
 		...(req.options || {}),
-		body: req.data ? JSON.stringify(req.data) : req.formData,
+		body: JSON.stringify(req.data),
 		method: req.method,
 	};
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		console.log([...res.headers.values()]);
 		return new Response(res.body, {
 			status: res.status,
 			statusText: res.statusText,

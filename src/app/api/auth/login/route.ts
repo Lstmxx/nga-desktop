@@ -37,7 +37,7 @@ export const POST = async (req: NextRequest) => {
 	data.append('password', requestData.password);
 	data.append('__inchst', 'UTF-8');
 	data.append('rid', 'login02601779342219146');
-	data.append('captcha', '009181');
+	data.append('captcha', requestData.captcha);
 	data.append('prid', 'P017003142634384405');
 	const options: RequestInit = {
 		headers,

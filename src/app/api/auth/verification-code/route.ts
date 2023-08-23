@@ -21,7 +21,7 @@ const headers = {
 export const GET = async () => {
 	const from = 'login';
 	const checkCodeId = `${from}${(Math.random() + '').substring(2)}`;
-	const url = `/login_check_code.php?id=${checkCodeId}&from=${from}`;
+	const url = `login_check_code.php?id=${checkCodeId}&from=${from}`;
 	const options: RequestInit = {
 		headers,
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
