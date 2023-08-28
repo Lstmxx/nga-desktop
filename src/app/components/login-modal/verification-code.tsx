@@ -13,32 +13,36 @@ export default function VerificationCode(props: {
 }) {
 	return (
 		<div className='flex flex-row'>
+			<div className='h-[65px] flex-1'>
+				<Controller
+					control={props.control}
+					name='captcha'
+					render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
+						<TextField
+							value={value}
+							size='small'
+							fullWidth
+							required
+							type='text'
+							label='验证码'
+							variant='standard'
+							error={!!error?.message}
+							helperText={error?.message}
+							onBlur={onBlur}
+							onChange={onChange}
+						/>
+					)}
+				/>
+			</div>
 			<Image
-				width={200}
-				height={200}
+				className='flex-1 h-full'
+				width={0}
+				height={0}
 				src={props.codeImage}
 				loading='lazy'
 				alt={''}
+				objectFit='contain'
 				onClick={props.onReloadImage}
-			/>
-			<Controller
-				control={props.control}
-				name='captcha'
-				render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
-					<TextField
-						value={value}
-						size='small'
-						fullWidth
-						required
-						type='text'
-						label='验证码'
-						variant='outlined'
-						error={!!error?.message}
-						helperText={error?.message}
-						onBlur={onBlur}
-						onChange={onChange}
-					/>
-				)}
 			/>
 		</div>
 	);

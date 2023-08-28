@@ -2,11 +2,22 @@
 import { ILoginForm } from '@/app/api/auth/login/type';
 import { LOGIN_TYPE, LOGIN_TYPE_LIST } from '@/app/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Dialog, FormControl, MenuItem, Select, TextField } from '@mui/material';
+import {
+	Button,
+	Dialog,
+	FormControl,
+	IconButton,
+	MenuItem,
+	Select,
+	TextField,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import VerificationCode from './verification-code';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Image from 'next/image';
 
 export interface LoginDialogProps {
 	open: boolean;
@@ -35,11 +46,7 @@ const createValidationSchema = () => {
 
 export default function LoginDialog(props: LoginDialogProps) {
 	const validationSchema = createValidationSchema();
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<ILoginForm>({
+	const { control, handleSubmit } = useForm<ILoginForm>({
 		defaultValues: {
 			type: LOGIN_TYPE.ACCOUNT,
 			name: '',
@@ -72,10 +79,22 @@ export default function LoginDialog(props: LoginDialogProps) {
 		}
 	}, [props.open]);
 	return (
-		<Dialog onClose={handleClose} open={open}>
-			<div className='bg-redwood-50 w-96 h-80 p-8'>
-				<form>
-					<div className='flex items-start  flex-nowrap'>
+		<Dialog onClose={handleClose} open={open} fullScreen={true}>
+			<div className='relative bg-redwood-50 flex items-center justify-center w-full h-full p-8'>
+				<IconButton className=' absolute left-0 top-0' onClick={handleClose}>
+					<ArrowBackIcon />
+				</IconButton>
+				<form className='flex-col w-72'>
+					<Image
+						className='w-full h-full'
+						width={0}
+						height={0}
+						src='/logo.svg'
+						loading='lazy'
+						alt={''}
+						objectFit='contain'
+					/>
+					<div className='flex items-start flex-nowrap h-[65px] mt-6'>
 						<Controller
 							control={control}
 							name='type'
@@ -111,24 +130,25 @@ export default function LoginDialog(props: LoginDialogProps) {
 							)}
 						/>
 					</div>
-					<Controller
-						control={control}
-						name='password'
-						render={({ field, fieldState: { error } }) => (
-							<TextField
-								{...field}
-								className='mt-6'
-								size='small'
-								required
-								fullWidth
-								type='password'
-								label='密码'
-								variant='outlined'
-								error={!!error?.message}
-								helperText={error?.message}
-							/>
-						)}
-					/>
+					<div className='h-[65px]'>
+						<Controller
+							control={control}
+							name='password'
+							render={({ field, fieldState: { error } }) => (
+								<TextField
+									{...field}
+									size='small'
+									required
+									fullWidth
+									type='password'
+									label='密码'
+									variant='outlined'
+									error={!!error?.message}
+									helperText={error?.message}
+								/>
+							)}
+						/>
+					</div>
 					<VerificationCode
 						control={control}
 						open={open}
@@ -136,7 +156,7 @@ export default function LoginDialog(props: LoginDialogProps) {
 						onReloadImage={handleGetVerificationCode}
 					/>
 					<Button
-						className='mt-6 w-full'
+						className='w-full mt-2'
 						variant='contained'
 						onClick={handleSubmit((data) => console.log(data))}
 					>
