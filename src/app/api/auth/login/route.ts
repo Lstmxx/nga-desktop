@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { http } from '../../common';
+import { encryptPassword } from './encrypt';
 import { ILoginForm } from './type';
 
 const URL = 'nuke.php';
@@ -34,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 	data.append('__ngaClientChecksum', '');
 	data.append('name', requestData.name);
 	data.append('type', requestData.type);
-	data.append('password', requestData.password);
+	data.append('password', encryptPassword(requestData.password));
 	data.append('__inchst', 'UTF-8');
 	data.append('rid', 'login02601779342219146');
 	data.append('captcha', requestData.captcha);

@@ -11,7 +11,7 @@ import {
 	Select,
 	TextField,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import VerificationCode from './verification-code';
@@ -45,6 +45,7 @@ const createValidationSchema = () => {
 };
 
 export default function LoginDialog(props: LoginDialogProps) {
+	const checkCodeId = useRef('');
 	const validationSchema = createValidationSchema();
 	const { control, handleSubmit } = useForm<ILoginForm>({
 		defaultValues: {
@@ -65,12 +66,14 @@ export default function LoginDialog(props: LoginDialogProps) {
 		const res = await fetch('http://localhost:3000/api/auth/verification-code', {
 			method: 'get',
 		});
-		if (res.status === 500) {
-			console.log(res.body);
-		} else if (res.status === 200) {
-			const codeImageUrl = URL.createObjectURL(await res.blob());
-			setCodeImage(codeImageUrl);
-		}
+		try {
+			const data = await res.formData();
+			console.log('code', data);
+			checkCodeId.current = (data.get('checkCodeId') as string) || '';
+			if (data.has('image')) {
+				setCodeImage(URL.createObjectURL(data.get('image') as Blob));
+			}
+		} catch (error) {}
 	};
 
 	useEffect(() => {

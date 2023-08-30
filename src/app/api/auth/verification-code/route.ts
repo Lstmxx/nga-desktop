@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import { http } from '../../common';
 
 const headers = {
@@ -32,5 +33,15 @@ export const GET = async () => {
 		method: 'get',
 		options,
 	});
-	return res;
+
+	const resFormData = new FormData();
+	resFormData.append('image', '');
+	resFormData.append('checkCodeId', checkCodeId);
+	if (res.status === 500) {
+		console.log(res.body);
+	} else if (res.status === 200) {
+		resFormData.set('image', await res.blob());
+	}
+
+	return new NextResponse(resFormData, { status: 200 });
 };
