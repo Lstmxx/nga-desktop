@@ -1,5 +1,4 @@
 'use client';
-import { ILoginForm } from '@/app/api/auth/login/type';
 import { LOGIN_TYPE, LOGIN_TYPE_LIST } from '@/app/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -16,6 +15,9 @@ import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import VerificationCode from './verification-code';
 
+import { useSnackbar } from '@/components/snackbar-provider/notistack';
+import getVerificationCode from '@/lib/auth/get-verification-code';
+import login, { ILoginForm } from '@/lib/auth/login';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 
@@ -45,9 +47,10 @@ const createValidationSchema = () => {
 };
 
 export default function LoginDialog(props: LoginDialogProps) {
-	const checkCodeId = useRef('');
+	const { enqueueSnackbar } = useSnackbar();
+
 	const validationSchema = createValidationSchema();
-	const { control, handleSubmit } = useForm<ILoginForm>({
+	const { control, handleSubmit, formState } = useForm<ILoginForm>({
 		defaultValues: {
 			type: LOGIN_TYPE.ACCOUNT,
 			name: '',
@@ -61,19 +64,26 @@ export default function LoginDialog(props: LoginDialogProps) {
 		onClose();
 	};
 
+	const checkCodeId = useRef('');
 	const [codeImage, setCodeImage] = useState('');
 	const handleGetVerificationCode = async () => {
-		const res = await fetch('http://localhost:3000/api/auth/verification-code', {
-			method: 'get',
-		});
 		try {
-			const data = await res.formData();
-			console.log('code', data);
-			checkCodeId.current = (data.get('checkCodeId') as string) || '';
-			if (data.has('image')) {
-				setCodeImage(URL.createObjectURL(data.get('image') as Blob));
-			}
-		} catch (error) {}
+			const res = await getVerificationCode();
+			checkCodeId.current = res.checkCodeId;
+			setCodeImage(res.imageUrl);
+		} catch (error) {
+			console.log(error);
+			enqueueSnackbar('获取验证码失败', { variant: 'error' });
+		}
+	};
+
+	const handleLogin = async (data: ILoginForm) => {
+		try {
+			const res = await login({ ...data, rid: checkCodeId.current });
+			console.log(res);
+		} catch (error: any) {
+			console.log(error.message);
+		}
 	};
 
 	useEffect(() => {
@@ -161,7 +171,7 @@ export default function LoginDialog(props: LoginDialogProps) {
 					<Button
 						className='w-full mt-2'
 						variant='contained'
-						onClick={handleSubmit((data) => console.log(data))}
+						onClick={handleSubmit((data) => handleLogin(data))}
 					>
 						登录
 					</Button>

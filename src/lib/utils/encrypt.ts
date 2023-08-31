@@ -1,4 +1,6 @@
-import JSEncrypt from 'jsencrypt';
+'use client';
+
+import type JSEncrypt from 'jsencrypt';
 
 let encrypt: JSEncrypt;
 const PUBLIC_KEY =
@@ -11,7 +13,8 @@ qDGw3/34qyF+E/hVgrGF4/CcWNP/LJCdB6DYtx7VPlQZF0tP1s+q/++rC4rQ2wmV\n\
 l2V8zGh1j7ojZbt62hVjy6byK1E/2XYo97ZtL4KDW7F5jJMvSDRFR7901UR8hCdf\n\
 4wIDAQAB\n\
 -----END PUBLIC KEY-----';
-const initEncrypt = () => {
+const initEncrypt = async () => {
+	const JSEncrypt = (await import('jsencrypt')).default;
 	if (encrypt) {
 		return encrypt;
 	}
@@ -20,7 +23,7 @@ const initEncrypt = () => {
 	return encrypt;
 };
 
-export const encryptPassword = (password: string) => {
-	const e = initEncrypt();
+export const encryptPassword = async (password: string) => {
+	const e = await initEncrypt();
 	return e.encrypt(password) || '';
 };

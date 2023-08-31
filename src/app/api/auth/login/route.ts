@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
 import { http } from '../../common';
-import { encryptPassword } from './encrypt';
-import { ILoginForm } from './type';
 
 const URL = 'nuke.php';
 
@@ -11,6 +9,7 @@ const headers = {
 	Connection: 'keep-alive',
 	Origin: 'https://bbs.nga.cn',
 	Referer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
+	'Content-Type': 'multipart/form-data;',
 	'Sec-Fetch-Dest': 'empty',
 	'Sec-Fetch-Mode': 'cors',
 	'Sec-Fetch-Site': 'same-origin',
@@ -24,22 +23,11 @@ const headers = {
 };
 
 export const POST = async (req: NextRequest) => {
-	const requestData: ILoginForm = await req.json();
+	const requestData = await req.json();
 	const data = new FormData();
-	data.append('__lib', 'login');
-	data.append('__output', '1');
-	data.append('app_id', '5004');
-	data.append('device', '');
-	data.append('trackid', '');
-	data.append('__act', 'login');
-	data.append('__ngaClientChecksum', '');
-	data.append('name', requestData.name);
-	data.append('type', requestData.type);
-	data.append('password', encryptPassword(requestData.password));
-	data.append('__inchst', 'UTF-8');
-	data.append('rid', 'login02601779342219146');
-	data.append('captcha', requestData.captcha);
-	data.append('prid', 'P017003142634384405');
+	for (const key of Object.keys(requestData)) {
+		data.set(key, requestData[key]);
+	}
 	const options: RequestInit = {
 		headers,
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
@@ -49,6 +37,7 @@ export const POST = async (req: NextRequest) => {
 		url: URL,
 		method: 'post',
 		options,
+		formData: data,
 	});
 	return res;
 };

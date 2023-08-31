@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { http } from '../../common';
 
 const headers = {
@@ -19,10 +19,11 @@ const headers = {
 	Referer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
 };
 
-export const GET = async () => {
-	const from = 'login';
-	const checkCodeId = `${from}${(Math.random() + '').substring(2)}`;
-	const url = `login_check_code.php?id=${checkCodeId}&from=${from}`;
+export const POST = async (req: NextRequest, params: any) => {
+	const formData = await req.formData();
+	console.log(formData);
+	const query = await req.json();
+	const url = `login_check_code.php?id=${query.checkCodeId}&from=${query.from}`;
 	const options: RequestInit = {
 		headers,
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
@@ -36,12 +37,14 @@ export const GET = async () => {
 
 	const resFormData = new FormData();
 	resFormData.append('image', '');
-	resFormData.append('checkCodeId', checkCodeId);
 	if (res.status === 500) {
 		console.log(res.body);
 	} else if (res.status === 200) {
 		resFormData.set('image', await res.blob());
 	}
 
-	return new NextResponse(resFormData, { status: 200 });
+	return new NextResponse(resFormData, {
+		status: 200,
+		headers: { 'Content-Type': 'multipart/form-data' },
+	});
 };

@@ -20,7 +20,7 @@ export async function http(req: {
 
 	const fetchOptions: RequestInit = {
 		...(req.options || {}),
-		body: JSON.stringify(req.data),
+		body: req.formData || JSON.stringify(req.data),
 		method: req.method,
 	};
 	try {
