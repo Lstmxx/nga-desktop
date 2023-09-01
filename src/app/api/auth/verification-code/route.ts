@@ -1,3 +1,4 @@
+import { CustomResponse } from '@/lib/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { http } from '../../common';
 
@@ -34,22 +35,23 @@ export const POST = async (req: NextRequest) => {
 		options,
 	});
 
-	console.log('api route');
-
 	const resFormData = new FormData();
-	resFormData.append('image', '');
-	if (res.status === 500) {
-		console.log(res.body);
-	} else if (res.status === 200) {
-		console.log('chang image');
-		resFormData.set('image', await res.blob());
-		console.log('chang done', resFormData);
+	try {
+		resFormData.append('image', '');
+		if (res.ok) {
+			resFormData.set('image', await res.blob());
+		}
+	} catch (error) {
+		const res: CustomResponse<null> = {
+			data: null,
+			message: '服务器出错',
+			success: false,
+		};
+		return new NextResponse(JSON.stringify(res), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' },
+		});
 	}
-
-	return new NextResponse(resFormData, {
-		status: 200,
-		// headers: { 'Content-Type': 'multipart/form-data' },
-	});
 };
 
 export const dynamic = 'force-static';

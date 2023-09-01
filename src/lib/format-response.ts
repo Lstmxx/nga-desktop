@@ -1,3 +1,9 @@
+export type CustomResponse<T> = {
+	data: T;
+	message: string;
+	success: boolean;
+};
+
 const formatToJson = async (response: Response) => {
 	const contentType = response.headers.get('Content-Type') || '';
 	const data: any = {};

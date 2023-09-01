@@ -27,14 +27,12 @@ export async function http(req: {
 	};
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		console.log('common res', res);
 		return new NextResponse(res.body, {
 			status: res.status,
 			statusText: res.statusText,
 			headers: res.headers,
 		});
 	} catch (error) {
-		console.log('error', error);
 		return new NextResponse(JSON.stringify(error), {
 			status: 500,
 			statusText: 'error',
