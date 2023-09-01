@@ -3,7 +3,7 @@ const formatToJson = async (response: Response) => {
 	const data: any = {};
 	if (contentType.includes('application/json')) {
 		Object.assign(data, await response.json());
-	} else if (contentType.includes('multipart/form-data')) {
+	} else if (contentType.includes('form')) {
 		const formData = await response.formData();
 		for (const key of formData.keys()) {
 			data[key] = formData.get(key);

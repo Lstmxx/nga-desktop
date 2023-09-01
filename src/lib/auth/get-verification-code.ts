@@ -17,7 +17,9 @@ export default async function getVerificationCode() {
 		body: JSON.stringify({ from, checkCodeId }),
 		headers: { 'Content-Type': 'application/json' },
 	});
+	console.log('getVerificationCode', res.headers.get('Content-Type'));
 	const data = await handleResponse<VerificationCodeRes>(res);
+	console.log('data', data);
 	const resJson = {
 		imageUrl: '',
 		checkCodeId,

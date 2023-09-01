@@ -19,10 +19,9 @@ const headers = {
 	Referer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
 };
 
-export const POST = async (req: NextRequest, params: any) => {
-	const formData = await req.formData();
-	console.log(formData);
+export const POST = async (req: NextRequest) => {
 	const query = await req.json();
+	console.log(query);
 	const url = `login_check_code.php?id=${query.checkCodeId}&from=${query.from}`;
 	const options: RequestInit = {
 		headers,
@@ -35,16 +34,22 @@ export const POST = async (req: NextRequest, params: any) => {
 		options,
 	});
 
+	console.log('api route');
+
 	const resFormData = new FormData();
 	resFormData.append('image', '');
 	if (res.status === 500) {
 		console.log(res.body);
 	} else if (res.status === 200) {
+		console.log('chang image');
 		resFormData.set('image', await res.blob());
+		console.log('chang done', resFormData);
 	}
 
 	return new NextResponse(resFormData, {
 		status: 200,
-		headers: { 'Content-Type': 'multipart/form-data' },
+		// headers: { 'Content-Type': 'multipart/form-data' },
 	});
 };
+
+export const dynamic = 'force-static';

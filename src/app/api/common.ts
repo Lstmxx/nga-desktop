@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server';
+
 const BASE_URL = 'https://bbs.nga.cn/';
 
 export async function http(req: {
@@ -20,19 +22,20 @@ export async function http(req: {
 
 	const fetchOptions: RequestInit = {
 		...(req.options || {}),
-		body: req.formData || JSON.stringify(req.data),
+		body: JSON.stringify(req.data),
 		method: req.method,
 	};
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		return new Response(res.body, {
+		console.log('common res', res);
+		return new NextResponse(res.body, {
 			status: res.status,
 			statusText: res.statusText,
 			headers: res.headers,
 		});
 	} catch (error) {
-		console.log(error);
-		return new Response(JSON.stringify(error), {
+		console.log('error', error);
+		return new NextResponse(JSON.stringify(error), {
 			status: 500,
 			statusText: 'error',
 		});
