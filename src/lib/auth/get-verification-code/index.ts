@@ -1,9 +1,6 @@
 import { systemConfig } from '@/config/system';
-import { handleResponse } from '../format-response';
-
-export interface VerificationCodeRes {
-	image: Blob;
-}
+import { handleResponse } from '@/lib/format-response';
+import { IVerificationCodeRes } from './type';
 
 const API = `${systemConfig.host}/api/auth/verification-code`;
 
@@ -17,7 +14,7 @@ export default async function getVerificationCode() {
 		body: JSON.stringify({ from, checkCodeId }),
 		headers: { 'Content-Type': 'application/json' },
 	});
-	const data = await handleResponse<VerificationCodeRes>(res);
+	const { data } = await handleResponse<IVerificationCodeRes>(res);
 	const resJson = {
 		imageUrl: '',
 		checkCodeId,

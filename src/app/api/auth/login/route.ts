@@ -1,4 +1,6 @@
-import { NextRequest } from 'next/server';
+import { ILoginRes } from '@/lib/auth/login/type';
+import { CustomResponse } from '@/lib/format-response';
+import { NextRequest, NextResponse } from 'next/server';
 import { http } from '../../common';
 
 const URL = 'nuke.php';
@@ -22,6 +24,23 @@ const headers = {
 	'sec-ch-ua-platform': '"Windows"',
 };
 
+interface IError {
+	'0': string;
+}
+
+interface IData {
+	'0': string;
+	'1': number;
+	'2': string;
+	'3': ILoginRes;
+}
+
+interface ILoginResponse {
+	error?: IError;
+	data?: IData;
+	time: number;
+}
+
 export const POST = async (req: NextRequest) => {
 	const requestData = await req.json();
 	const data = new FormData();
@@ -39,5 +58,29 @@ export const POST = async (req: NextRequest) => {
 		options,
 		formData: data,
 	});
-	return res;
+
+	const resJson: CustomResponse<null | ILoginRes> = {
+		data: null,
+		message: '',
+		success: true,
+	};
+	try {
+		const resString = await res.text();
+		const data = JSON.parse(resString.split('script_muti_get_var_store=')[1]) as ILoginResponse;
+		if (data.data) {
+			resJson.data = data.data['3'];
+		} else if (data.error) {
+			resJson.message = data.error['0'];
+			resJson.success = false;
+		}
+	} catch (error: any) {
+		resJson.success = false;
+		resJson.message = error.toString();
+	}
+	return new NextResponse(JSON.stringify(resJson), {
+		status: 200,
+		headers: { 'Content-Type': 'application/json' },
+	});
 };
+
+export const dynamic = 'force-static';

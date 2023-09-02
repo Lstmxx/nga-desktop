@@ -6,25 +6,29 @@ export type CustomResponse<T> = {
 
 const formatToJson = async (response: Response) => {
 	const contentType = response.headers.get('Content-Type') || '';
-	const data: any = {};
+	const data: CustomResponse<any> = {
+		data: {},
+		success: true,
+		message: '',
+	};
 	if (contentType.includes('application/json')) {
 		Object.assign(data, await response.json());
 	} else if (contentType.includes('form')) {
 		const formData = await response.formData();
 		for (const key of formData.keys()) {
-			data[key] = formData.get(key);
+			data.data[key] = formData.get(key);
 		}
 	}
 	return data;
 };
 
-export async function handleResponse<T>(response: Response): Promise<T> {
-	const data = await formatToJson(response);
+export async function handleResponse<T>(response: Response) {
+	const data = (await formatToJson(response)) as CustomResponse<T>;
 
-	if (!response.ok) {
-		const message = (data.message as string) || response.statusText || response.statusText;
+	if (!response.ok || !data.success) {
+		const message = data.message || response.statusText || response.statusText;
 		throw new Error(message);
 	}
 
-	return data as T;
+	return data;
 }

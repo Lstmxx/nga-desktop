@@ -35,23 +35,33 @@ export const POST = async (req: NextRequest) => {
 		options,
 	});
 
-	const resFormData = new FormData();
+	let response: NextResponse;
+	const errorRes: CustomResponse<null> = {
+		data: null,
+		message: '服务器出错',
+		success: false,
+	};
 	try {
+		const resFormData = new FormData();
 		resFormData.append('image', '');
 		if (res.ok) {
 			resFormData.set('image', await res.blob());
+			response = new NextResponse(resFormData, { status: 200 });
+		} else {
+			response = new NextResponse(JSON.stringify(errorRes), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			});
 		}
-	} catch (error) {
-		const res: CustomResponse<null> = {
-			data: null,
-			message: '服务器出错',
-			success: false,
-		};
-		return new NextResponse(JSON.stringify(res), {
-			status: 500,
+	} catch (error: any) {
+		errorRes.message = error.toString();
+		response = new NextResponse(JSON.stringify(errorRes), {
+			status: 200,
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
+
+	return response;
 };
 
 export const dynamic = 'force-static';

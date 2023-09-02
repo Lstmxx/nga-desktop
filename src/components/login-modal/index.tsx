@@ -17,7 +17,8 @@ import VerificationCode from './verification-code';
 
 import { useSnackbar } from '@/components/snackbar-provider/notistack';
 import getVerificationCode from '@/lib/auth/get-verification-code';
-import login, { ILoginForm } from '@/lib/auth/login';
+import login from '@/lib/auth/login';
+import { ILoginForm } from '@/lib/auth/login/type';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 
@@ -80,9 +81,11 @@ export default function LoginDialog(props: LoginDialogProps) {
 	const handleLogin = async (data: ILoginForm) => {
 		try {
 			const res = await login({ ...data, rid: checkCodeId.current });
+			enqueueSnackbar('登录成功', { variant: 'success' });
 			console.log(res);
 		} catch (error: any) {
-			console.log(error.message);
+			enqueueSnackbar(error, { variant: 'error' });
+			console.log(error);
 		}
 	};
 
