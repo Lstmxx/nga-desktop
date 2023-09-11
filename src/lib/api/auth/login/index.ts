@@ -1,8 +1,9 @@
-import { handleResponse } from '../../format-response';
-import { encryptPassword } from '../../utils/encrypt';
+import { systemConfig } from '@/config/system';
+import { handleResponse } from '../../../format-response';
+import { encryptPassword } from '../../../utils/encrypt';
 import { ILoginForm, ILoginReq, ILoginRes } from './type';
 
-const API = `${process.env.HOST}/api/auth/login`;
+const API = `${systemConfig.host}/api/auth/login`;
 
 export default async function login(requestData: ILoginForm & { rid: string }) {
 	const req: ILoginReq = {

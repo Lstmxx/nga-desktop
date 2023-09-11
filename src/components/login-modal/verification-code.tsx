@@ -1,6 +1,6 @@
 'use-client';
 
-import { ILoginForm } from '@/lib/auth/login';
+import { ILoginForm } from '@/lib/api/auth/login/type';
 import TextField from '@mui/material/TextField';
 import Image from 'next/image';
 import { Control, Controller } from 'react-hook-form';

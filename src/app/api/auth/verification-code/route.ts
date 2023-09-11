@@ -1,3 +1,4 @@
+import { apiHostConfig } from '@/config/host';
 import { CustomResponse } from '@/lib/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { http } from '../../common';
@@ -22,8 +23,7 @@ const headers = {
 
 export const POST = async (req: NextRequest) => {
 	const query = await req.json();
-	console.log(query);
-	const url = `login_check_code.php?id=${query.checkCodeId}&from=${query.from}`;
+	const url = `${apiHostConfig.nga}login_check_code.php?id=${query.checkCodeId}&from=${query.from}`;
 	const options: RequestInit = {
 		headers,
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',

@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 
-const BASE_URL = 'https://bbs.nga.cn/';
+export const jsTxt2Json = <T>(text: string): T => {
+	try {
+		const data = JSON.parse(text.split('script_muti_get_var_store=')[1]) as T;
+		return data;
+	} catch (error) {
+		return {} as T;
+	}
+};
 
 export async function http(req: {
 	url: string;
@@ -18,7 +25,7 @@ export async function http(req: {
 		10 * 60 * 1000
 	);
 
-	const fetchUrl = `${BASE_URL}${req.url}`;
+	const fetchUrl = `${req.url}`;
 
 	const fetchOptions: RequestInit = {
 		...(req.options || {}),

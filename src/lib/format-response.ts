@@ -24,7 +24,7 @@ const formatToJson = async (response: Response) => {
 
 export async function handleResponse<T>(response: Response) {
 	const data = (await formatToJson(response)) as CustomResponse<T>;
-
+	console.log(data);
 	if (!response.ok || !data.success) {
 		const message = data.message || response.statusText || response.statusText;
 		throw new Error(message);

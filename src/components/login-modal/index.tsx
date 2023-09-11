@@ -16,9 +16,9 @@ import * as Yup from 'yup';
 import VerificationCode from './verification-code';
 
 import { useSnackbar } from '@/components/snackbar-provider/notistack';
-import getVerificationCode from '@/lib/auth/get-verification-code';
-import login from '@/lib/auth/login';
-import { ILoginForm } from '@/lib/auth/login/type';
+import getVerificationCode from '@/lib/api/auth/get-verification-code';
+import login from '@/lib/api/auth/login';
+import { ILoginForm } from '@/lib/api/auth/login/type';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 

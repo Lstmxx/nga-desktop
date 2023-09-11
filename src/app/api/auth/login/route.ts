@@ -1,9 +1,11 @@
-import { ILoginRes } from '@/lib/auth/login/type';
+import { ILoginRes } from '@/lib/api/auth/login/type';
 import { CustomResponse } from '@/lib/format-response';
 import { NextRequest, NextResponse } from 'next/server';
-import { http } from '../../common';
+import { http, jsTxt2Json } from '../../common';
 
-const URL = 'nuke.php';
+import { apiHostConfig } from '@/config/host';
+
+const URL = `${apiHostConfig.nga}nuke.php`;
 
 const headers = {
 	Accept: '*/*',
@@ -66,7 +68,7 @@ export const POST = async (req: NextRequest) => {
 	};
 	try {
 		const resString = await res.text();
-		const data = JSON.parse(resString.split('script_muti_get_var_store=')[1]) as ILoginResponse;
+		const data = jsTxt2Json<ILoginResponse>(resString);
 		if (data.data) {
 			resJson.data = data.data['3'];
 		} else if (data.error) {
