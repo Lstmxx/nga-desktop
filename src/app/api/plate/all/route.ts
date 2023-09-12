@@ -66,9 +66,10 @@ export const GET = async () => {
 		method: 'get',
 		options,
 	});
-
-	const jsText = await res.text();
-	console.log('jstext', jsText);
+	const arrayBuffer = await res.arrayBuffer();
+	const buffer = Buffer.from(arrayBuffer);
+	const decoder = new TextDecoder('gbk');
+	const jsText = decoder.decode(buffer);
 	const data = jsTxt2Json<Data>(jsText);
 	const { all, iconBase } = data.data[0];
 	const resJson: CustomResponse<null | any> = {
@@ -82,6 +83,6 @@ export const GET = async () => {
 
 	return new NextResponse(JSON.stringify(resJson), {
 		status: 200,
-		headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+		headers: { 'Content-Type': 'application/json' },
 	});
 };
