@@ -1,7 +1,7 @@
 import AlertProvider from '@/components/snackbar-provider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import ThemeRegistry from '../components/theme-registry/theme-registry';
 import './globals.css';
 

@@ -2,26 +2,28 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import IconButton from '@mui/material/IconButton';
+import { useState } from 'react';
 import Login from './login';
+import Menu from './menu';
 import RouterBar from './router-bar';
 
-export type AppBarProps = {
-  isOpenMenu: boolean;
-  onMenuClick?: () => void;
-};
-
-export default function AppBar(props: AppBarProps) {
-  return (
-    <div className='flex fixed top-0 left-0 w-full z-50 items-center'>
-      <IconButton onClick={props.onMenuClick}>
-        {props.isOpenMenu ? (
-          <MenuOpenIcon className='text-redwood-600 cursor-pointer hover:text-redwood-600/50' />
-        ) : (
-          <MenuIcon className='text-redwood-600 cursor-pointer hover:text-redwood-600/50' />
-        )}
-      </IconButton>
-      <RouterBar></RouterBar>
-      <Login></Login>
-    </div>
-  );
+export default function AppBar() {
+	const [isOpenMenu, setIsOpenMenu] = useState(false);
+	const handleMenuClick = () => {
+		setIsOpenMenu((pre) => !pre);
+	};
+	return (
+		<div className='flex fixed top-0 left-0 w-full z-50 items-center bg-redwood-100 drop-shadow-sm'>
+			<Menu open={isOpenMenu} />
+			<IconButton onClick={handleMenuClick}>
+				{isOpenMenu ? (
+					<MenuOpenIcon className='text-redwood-600 cursor-pointer hover:text-redwood-600/50' />
+				) : (
+					<MenuIcon className='text-redwood-600 cursor-pointer hover:text-redwood-600/50' />
+				)}
+			</IconButton>
+			<RouterBar></RouterBar>
+			<Login></Login>
+		</div>
+	);
 }

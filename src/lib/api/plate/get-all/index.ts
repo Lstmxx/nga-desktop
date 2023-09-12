@@ -1,5 +1,6 @@
 import { systemConfig } from '@/config/system';
 import { handleResponse } from '@/lib/format-response';
+import { IPlate } from './type';
 
 const API = `${systemConfig.host}/api/plate/all`;
 
@@ -7,8 +8,7 @@ export default async function getAll() {
 	const res = await fetch(`${API}?t=${Math.random()}`, {
 		method: 'get',
 	});
-	console.log(res);
-	const { data } = await handleResponse<any>(res);
+	const { data } = await handleResponse<{ list: IPlate[]; iconBase: string }>(res);
 
 	return data;
 }

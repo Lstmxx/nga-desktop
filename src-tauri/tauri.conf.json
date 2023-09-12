@@ -17,7 +17,8 @@
         "request": true,
         "scope": [
           "https://ngabbs.com/*",
-          "https://bbs.nga.cn/*"
+          "https://bbs.nga.cn/*",
+          "https://img4.nga.178.com/*"
         ]
       }
     },

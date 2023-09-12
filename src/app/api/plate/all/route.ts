@@ -1,4 +1,5 @@
 import { apiHostConfig } from '@/config/host';
+import { IPlate } from '@/lib/api/plate/get-all/type';
 import { CustomResponse } from '@/lib/format-response';
 import { NextResponse } from 'next/server';
 import { http, jsTxt2Json } from '../../common';
@@ -20,31 +21,23 @@ const headers = {
 	'sec-ch-ua-platform': '"macOS"',
 };
 
-interface Item {
-	id?: string;
-	name?: string;
-	fid?: string;
-	info?: string;
-	content: Item[];
-}
-
 interface Data {
 	data: {
 		'0': {
 			iconBase: string;
-			all: Record<string, Item>;
+			all: Record<string, IPlate>;
 		};
 	};
 }
 
-const convert2List = (data: Record<string, Item>): Item[] => {
+const convert2List = (data: Record<string, IPlate>): IPlate[] => {
 	const keys = Object.keys(data);
-	const res: Item[] = [];
+	const res: IPlate[] = [];
 	keys.forEach((key) => {
 		const target = data[key];
-		let content: Item[] = [];
+		let content: IPlate[] = [];
 		if (target.content) {
-			content = convert2List(target.content as unknown as Record<string, Item>);
+			content = convert2List(target.content as unknown as Record<string, IPlate>);
 		}
 		res.push({ ...target, content });
 	});
