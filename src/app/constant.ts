@@ -1,6 +1,6 @@
 export enum LOGIN_TYPE {
 	PHONE = 'phone',
-	EMAIL = 'email',
+	EMAIL = 'mail',
 	ID = 'id',
 	ACCOUNT = ' ',
 }

@@ -17,9 +17,9 @@ export default async function Home() {
 	const data = await getAll();
 	const fast = getFast(data.list);
 	return (
-		<main className='flex min-h-screen flex-col items-center justify-between px-24 py-12'>
+		<div className='flex flex-col items-center justify-between'>
 			<Plate plates={data.list} />
 			<UpdateMenus plate={fast} />
-		</main>
+		</div>
 	);
 }

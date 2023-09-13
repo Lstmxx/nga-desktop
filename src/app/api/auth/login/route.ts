@@ -1,5 +1,5 @@
 import { ILoginRes } from '@/lib/api/auth/login/type';
-import { CustomResponse } from '@/lib/format-response';
+import { CustomResponse } from '@/lib/utils/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { http, jsTxt2Json } from '../../common';
 
@@ -10,20 +10,21 @@ const URL = `${apiHostConfig.nga}nuke.php`;
 const headers = {
 	Accept: '*/*',
 	'Accept-Language': 'zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6',
+	'Cache-Control': 'no-cache',
 	Connection: 'keep-alive',
 	Origin: 'https://bbs.nga.cn',
+	Pragma: 'no-cache',
 	Referer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
-	'Content-Type': 'multipart/form-data;',
 	'Sec-Fetch-Dest': 'empty',
 	'Sec-Fetch-Mode': 'cors',
 	'Sec-Fetch-Site': 'same-origin',
 	'User-Agent':
-		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
 	'X-USER-AGENT':
-		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
 	'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
 	'sec-ch-ua-mobile': '?0',
-	'sec-ch-ua-platform': '"Windows"',
+	'sec-ch-ua-platform': '"macOS"',
 };
 
 interface IError {
@@ -49,10 +50,10 @@ export const POST = async (req: NextRequest) => {
 	for (const key of Object.keys(requestData)) {
 		data.set(key, requestData[key]);
 	}
+	console.log(requestData);
 	const options: RequestInit = {
-		headers,
+		headers: Object.assign({}, headers),
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
-		referrerPolicy: 'unsafe-url',
 	};
 	const res = await http({
 		url: URL,
@@ -67,8 +68,12 @@ export const POST = async (req: NextRequest) => {
 		success: true,
 	};
 	try {
-		const resString = await res.text();
-		const data = jsTxt2Json<ILoginResponse>(resString);
+		const arrayBuffer = await res.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+		const decoder = new TextDecoder('gbk');
+		const jsText = decoder.decode(buffer);
+		console.log(jsText);
+		const data = jsTxt2Json<ILoginResponse>(jsText);
 		if (data.data) {
 			resJson.data = data.data['3'];
 		} else if (data.error) {

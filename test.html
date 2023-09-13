@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+	><head>
+		<title>NGA玩家社区</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+		<script>
+			__RES_PATH = 'http://img4.nga.178.com/ngabbs/nga_classic';
+			if (location.protocol == 'https:') {
+				(function () {
+					var i = 0,
+						a = arguments;
+					for (; i < a.length; i++)
+						this[a[i]] = this[a[i]].replace(/^https?:\/\/[^\/]+/, 'https://img4.nga.178.com');
+				})('__RES_PATH');
+			}
+			(function () {
+				var addCssf = function (u) {
+					var l = document.createElement('link');
+					l.rel = 'stylesheet';
+					l.type = 'text/css';
+					l.href = u;
+					l.media = 'all';
+					document.getElementsByTagName('head')[0].appendChild(l);
+				}; //
+				var addCss = function (css) {
+					var h = document.getElementsByTagName('head')[0],
+						s = document.createElement('style');
+					s.type = 'text/css';
+					if (s.styleSheet) {
+						h.appendChild(s);
+						s.styleSheet.cssText = css;
+					} else {
+						s.appendChild(document.createTextNode(css));
+						h.appendChild(s);
+					}
+				};
+				addCssf(__RES_PATH + '/css_nuke_default.css?110911');
+				if (window.parent != window.self)
+					addCss('body {margin:0.384em}\n#page_title {display:none}');
+			})();
+			function replaceTitle() {
+				var tmp = document.getElementById('page_title'),
+					tmp2 = location.href.match(/^https?:\/\/([^\/]+)/)[1];
+				tmp.innerHTML =
+					'<a href=//' + tmp2 + '>' + tmp2.toUpperCase() + '</a> &nbsp; ' + tmp.innerHTML;
+			}
+			function loadScript(sr) {
+				if (sr.length == 0) return;
+				var c = sr.shift(),
+					f = typeof sr[0] == 'function' ? sr.shift() : function () {},
+					s = document.createElement('script');
+				s.src = c
+					? c.charAt(0) == '@'
+						? __SCRIPTS[c.substr(1)]
+						: c
+					: '/nuke.php?__lib=misc&__act=default_script_loader&__output=2';
+				s.onload = function () {
+					f();
+					loadScript(sr);
+				};
+				document.getElementsByTagName('head')[0].appendChild(s);
+			}
+		</script>
+	</head>
+	<body> </body>
+</html>

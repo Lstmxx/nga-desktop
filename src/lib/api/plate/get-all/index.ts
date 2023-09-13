@@ -1,5 +1,5 @@
 import { systemConfig } from '@/config/system';
-import { handleResponse } from '@/lib/format-response';
+import { handleResponse } from '@/lib/utils/format-response';
 import { IPlate } from './type';
 
 const API = `${systemConfig.host}/api/plate/all`;
