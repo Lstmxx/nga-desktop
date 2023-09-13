@@ -9,7 +9,7 @@ type NodeProps = {
 
 export default function Node(props: NodeProps) {
 	return (
-		<div className='flex items-start p-2 rounded bg-redwood-200 mr-4 mb-4 w-[180px] overflow-hidden'>
+		<div className='flex items-start p-2 rounded bg-redwood-200 overflow-hidden cursor-pointer mb-2'>
 			<img
 				className='h-10 w-10 rounded-full bg-redwood-300 mr-2'
 				src={`${assetHostConfig.icon}/${props.node.fid}u.png?${Math.random()}`}

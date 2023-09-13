@@ -9,17 +9,24 @@ type PlateProps = {
 const ContentTree = (props: PlateProps) => {
 	return (
 		<>
-			{props.plates.map((plate, index) => (
-				<div className='flex flex-wrap' key={index}>
-					{plate.fid && <Node node={plate} />}
-					{plate.content && plate.content.length > 0 && plate.name && (
-						<Typography className='w-full' gutterBottom variant='h6' component='div'>
-							{plate.name}
-						</Typography>
-					)}
-					{plate.content && plate.content.length > 0 && ContentTree({ plates: plate.content })}
-				</div>
-			))}
+			{props.plates.map((plate, index) => {
+				if (plate.fid) {
+					return <Node node={plate} key={index} />;
+				}
+				if (plate.content && plate.content.length > 0) {
+					return (
+						<div key={index}>
+							<Typography className='w-full' gutterBottom variant='h6' component='div'>
+								{plate.name}
+							</Typography>
+							<div className='grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2'>
+								<ContentTree plates={plate.content} />
+							</div>
+						</div>
+					);
+				}
+				return null;
+			})}
 		</>
 	);
 };
