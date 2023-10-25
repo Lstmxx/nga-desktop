@@ -19,6 +19,7 @@ import { useSnackbar } from '@/components/snackbar-provider/notistack';
 import getVerificationCode from '@/lib/api/auth/get-verification-code';
 import login from '@/lib/api/auth/login';
 import { ILoginForm } from '@/lib/api/auth/login/type';
+import setCookies from '@/lib/api/auth/set-cookies';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 
@@ -83,6 +84,7 @@ export default function LoginDialog(props: LoginDialogProps) {
 			const res = await login({ ...data, rid: checkCodeId.current });
 			enqueueSnackbar('登录成功', { variant: 'success' });
 			console.log(res);
+			setCookies({ uid: res.uid, cid: res.token });
 		} catch (error: any) {
 			enqueueSnackbar(error, { variant: 'error' });
 			console.log(error);

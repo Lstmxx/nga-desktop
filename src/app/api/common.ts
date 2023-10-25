@@ -34,7 +34,7 @@ export async function http(req: {
 	};
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		console.log(res);
+		console.log('cookie', res.headers.get('Set-Cookie'));
 		return new NextResponse(res.body, {
 			status: res.status,
 			statusText: res.statusText,

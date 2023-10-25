@@ -1,11 +1,9 @@
-import { ILoginRes } from '@/lib/api/auth/login/type';
+import { apiHostConfig } from '@/config/host';
+import { ISetCookiesReq } from '@/lib/api/auth/set-cookies/type';
 import { CustomResponse } from '@/lib/utils/format-response';
 import { NextRequest, NextResponse } from 'next/server';
-import { http, jsTxt2Json } from '../../common';
-
-import { apiHostConfig } from '@/config/host';
-
-const URL = `${apiHostConfig.nga}nuke.php`;
+import xmljs from 'xml-js';
+import { http } from '../../common';
 
 const headers = {
 	Accept: '*/*',
@@ -27,65 +25,42 @@ const headers = {
 	'sec-ch-ua-platform': '"macOS"',
 };
 
-interface IError {
-	'0': string;
-}
-
-interface IData {
-	'0': string;
-	'1': number;
-	'2': string;
-	'3': ILoginRes;
-}
-
-interface ILoginResponse {
-	error?: IError;
-	data?: IData;
-	time: number;
-}
-
 export const POST = async (req: NextRequest) => {
-	const requestData = await req.json();
-	const data = new FormData();
-	for (const key of Object.keys(requestData)) {
-		data.set(key, requestData[key]);
-	}
+	const query = (await req.json()) as ISetCookiesReq;
+	const formData = new FormData();
+	formData.set('uid', query.uid.toString());
+	formData.set('cid', query.cid);
+
+	const url = `${apiHostConfig.nga}nuke.php?__lib=login&__act=login_set_cookie_quick&__output=9`;
+
 	const options: RequestInit = {
 		headers: Object.assign({}, headers),
 		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
 	};
 	const res = await http({
-		url: URL,
+		url,
 		method: 'post',
 		options,
-		formData: data,
+		formData,
 	});
-
-	const resJson: CustomResponse<null | ILoginRes> = {
+	const resJson: CustomResponse<null> = {
 		data: null,
 		message: '',
 		success: true,
 	};
 	try {
-		const arrayBuffer = await res.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-		const decoder = new TextDecoder('gbk');
-		const jsText = decoder.decode(buffer);
-		const data = jsTxt2Json<ILoginResponse>(jsText);
-		if (data.data) {
-			resJson.data = data.data['3'];
-		} else if (data.error) {
-			resJson.message = data.error['0'];
-			resJson.success = false;
+		const data = JSON.parse(xmljs.xml2json(await res.text()));
+		console.log(data);
+		if (data['root']['data']['item'] !== 'SUCCESS') {
+			resJson.message = '登录成功';
 		}
-	} catch (error: any) {
+	} catch (error) {
 		resJson.success = false;
-		resJson.message = error.toString();
+		resJson.message = '系统错误';
 	}
+	res.headers.set('Content-Type', 'application/json');
 	return new NextResponse(JSON.stringify(resJson), {
 		status: 200,
-		headers: { 'Content-Type': 'application/json' },
+		headers: res.headers,
 	});
 };
-
-export const dynamic = 'force-static';
