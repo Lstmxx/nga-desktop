@@ -49,7 +49,9 @@ export const POST = async (req: NextRequest) => {
 		success: true,
 	};
 	try {
-		const data = JSON.parse(xmljs.xml2json(await res.text()));
+		const text = await res.text();
+		console.log(text);
+		const data = JSON.parse(xmljs.xml2json(text));
 		console.log(data);
 		if (data['root']['data']['item'] !== 'SUCCESS') {
 			resJson.message = '登录成功';
@@ -64,3 +66,5 @@ export const POST = async (req: NextRequest) => {
 		headers: res.headers,
 	});
 };
+
+export const dynamic = 'force-static';

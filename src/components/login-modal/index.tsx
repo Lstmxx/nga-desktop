@@ -20,6 +20,7 @@ import getVerificationCode from '@/lib/api/auth/get-verification-code';
 import login from '@/lib/api/auth/login';
 import { ILoginForm } from '@/lib/api/auth/login/type';
 import setCookies from '@/lib/api/auth/set-cookies';
+import { useUserStore } from '@/store/user';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 
@@ -50,7 +51,7 @@ const createValidationSchema = () => {
 
 export default function LoginDialog(props: LoginDialogProps) {
 	const { enqueueSnackbar } = useSnackbar();
-
+	const { updateUser } = useUserStore();
 	const validationSchema = createValidationSchema();
 	const { control, handleSubmit, formState } = useForm<ILoginForm>({
 		defaultValues: {
@@ -84,7 +85,9 @@ export default function LoginDialog(props: LoginDialogProps) {
 			const res = await login({ ...data, rid: checkCodeId.current });
 			enqueueSnackbar('登录成功', { variant: 'success' });
 			console.log(res);
-			setCookies({ uid: res.uid, cid: res.token });
+			await setCookies({ uid: res.uid, cid: res.token });
+			updateUser(res);
+			handleClose();
 		} catch (error: any) {
 			enqueueSnackbar(error, { variant: 'error' });
 			console.log(error);
