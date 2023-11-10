@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 
+export const cloneHeaders = (headers: Headers) => {
+	const h = new Headers();
+	for (const kv of headers.entries()) {
+		h.append(kv[0], kv[1]);
+	}
+	return h;
+};
+
 export const jsTxt2Json = <T>(text: string): T => {
 	try {
 		const data = JSON.parse(text.split('script_muti_get_var_store=')[1]) as T;
@@ -34,12 +42,7 @@ export async function http(req: {
 	};
 	try {
 		const res = await fetch(fetchUrl, fetchOptions);
-		console.log('cookie', res.headers.get('Set-Cookie'));
-		return new NextResponse(res.body, {
-			status: res.status,
-			statusText: res.statusText,
-			headers: res.headers,
-		});
+		return res;
 	} catch (error) {
 		return new NextResponse(JSON.stringify(error), {
 			status: 500,

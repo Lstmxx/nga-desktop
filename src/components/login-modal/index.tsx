@@ -20,6 +20,7 @@ import getVerificationCode from '@/lib/api/auth/get-verification-code';
 import login from '@/lib/api/auth/login';
 import { ILoginForm } from '@/lib/api/auth/login/type';
 import setCookies from '@/lib/api/auth/set-cookies';
+import { isEmail, isPhone } from '@/lib/utils/is';
 import { useUserStore } from '@/store/user';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
@@ -30,6 +31,17 @@ export interface LoginDialogProps {
 }
 
 const createValidationSchema = () => {
+	const validatorName: Record<
+		LOGIN_TYPE,
+		(schema: Yup.StringSchema<string, Yup.AnyObject, undefined, ''>) => any
+	> = {
+		[LOGIN_TYPE.EMAIL]: (schema) => schema.email('邮箱格式不对'),
+		[LOGIN_TYPE.PHONE]: (schema) =>
+			schema.matches(/^(?:(?:\+|00)86)?1[3-9]\d{9}$/, { message: '手机号格式不对' }),
+		[LOGIN_TYPE.ID]: (schema) => schema.required('id不能为空'),
+		[LOGIN_TYPE.ACCOUNT]: (schema) => schema.required('账号不能为空'),
+	};
+
 	const validationSchema: Yup.ObjectSchema<ILoginForm> = Yup.object().shape({
 		type: Yup.string()
 			.required('类型不能为空')
@@ -41,7 +53,8 @@ const createValidationSchema = () => {
 			.required('账号不能为空')
 			.when('type', (type, schema) => {
 				console.log('name type', type);
-				return (type[0] as LOGIN_TYPE) === LOGIN_TYPE.EMAIL ? schema.email('邮箱格式不对') : schema;
+				const fn = validatorName[type[0] as LOGIN_TYPE];
+				return fn ? fn(schema) : schema;
 			}),
 		password: Yup.string().required('密码不能为空'),
 		captcha: Yup.string().required('验证码不能为空'),
@@ -53,7 +66,8 @@ export default function LoginDialog(props: LoginDialogProps) {
 	const { enqueueSnackbar } = useSnackbar();
 	const { updateUser } = useUserStore();
 	const validationSchema = createValidationSchema();
-	const { control, handleSubmit, formState } = useForm<ILoginForm>({
+	const { control, handleSubmit, formState, watch, setValue } = useForm<ILoginForm>({
+		mode: 'onChange',
 		defaultValues: {
 			type: LOGIN_TYPE.ACCOUNT,
 			name: '',
@@ -62,6 +76,16 @@ export default function LoginDialog(props: LoginDialogProps) {
 		},
 		resolver: yupResolver(validationSchema),
 	});
+
+	const watchFields = watch();
+	useEffect(() => {
+		if (watchFields.type !== LOGIN_TYPE.EMAIL && isEmail(watchFields.name)) {
+			setValue('type', LOGIN_TYPE.EMAIL);
+		} else if (watchFields.type !== LOGIN_TYPE.PHONE && isPhone(watchFields.name)) {
+			setValue('type', LOGIN_TYPE.PHONE);
+		}
+	}, [setValue, watchFields]);
+
 	const { open, onClose } = props;
 	const handleClose = () => {
 		onClose();
@@ -90,6 +114,7 @@ export default function LoginDialog(props: LoginDialogProps) {
 			handleClose();
 		} catch (error: any) {
 			enqueueSnackbar(error, { variant: 'error' });
+			handleGetVerificationCode();
 			console.log(error);
 		}
 	};

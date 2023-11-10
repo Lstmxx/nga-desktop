@@ -1,5 +1,4 @@
-import { apiHostConfig } from '@/config/host';
-import { ISetCookiesReq } from '@/lib/api/auth/set-cookies/type';
+import { ISetCookiesReq, ISetCookiesRes } from '@/lib/api/auth/set-cookies/type';
 import { CustomResponse } from '@/lib/utils/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import xmljs from 'xml-js';
@@ -12,7 +11,7 @@ const headers = {
 	Connection: 'keep-alive',
 	Origin: 'https://bbs.nga.cn',
 	Pragma: 'no-cache',
-	Referer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
+	Referer: 'https://bbs.nga.cn/',
 	'Sec-Fetch-Dest': 'empty',
 	'Sec-Fetch-Mode': 'cors',
 	'Sec-Fetch-Site': 'same-origin',
@@ -25,45 +24,62 @@ const headers = {
 	'sec-ch-ua-platform': '"macOS"',
 };
 
+const hosts = ['https://nga.178.com/', 'https://ngabbs.com/', 'https://bbs.nga.cn/'];
+
 export const POST = async (req: NextRequest) => {
 	const query = (await req.json()) as ISetCookiesReq;
 	const formData = new FormData();
 	formData.set('uid', query.uid.toString());
 	formData.set('cid', query.cid);
 
-	const url = `${apiHostConfig.nga}nuke.php?__lib=login&__act=login_set_cookie_quick&__output=9`;
-
-	const options: RequestInit = {
-		headers: Object.assign({}, headers),
-		referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
-	};
-	const res = await http({
-		url,
-		method: 'post',
-		options,
-		formData,
+	const requests = hosts.map((host) => {
+		const url = `${host}nuke.php?__lib=login&__act=login_set_cookie_quick&__output=9`;
+		const options: RequestInit = {
+			headers: Object.assign({}, headers, {
+				Referer:
+					host === 'https://bbs.nga.cn'
+						? 'https://bbs.nga.cn/nuke.php?__lib=login&__act=account&login'
+						: 'https://bbs.nga.cn/',
+			}),
+			referrer: 'https://bbs.nga.cn/nuke/account_copy.html?login',
+		};
+		return http({
+			url,
+			method: 'post',
+			options,
+			formData,
+		});
 	});
-	const resJson: CustomResponse<null> = {
-		data: null,
+
+	const resList = await Promise.all(requests);
+	const resJson: CustomResponse<ISetCookiesRes> = {
+		data: { cookies: [] },
 		message: '',
 		success: true,
 	};
 	try {
-		const text = await res.text();
-		console.log(text);
-		const data = JSON.parse(xmljs.xml2json(text));
-		console.log(data);
-		if (data['root']['data']['item'] !== 'SUCCESS') {
+		if (
+			resList.every(async (res) => {
+				const text = await res.text();
+				const data = JSON.parse(xmljs.xml2json(text, { compact: true }));
+				console.log(data);
+				return data['root']['data']['item'] !== 'SUCCESS';
+			})
+		) {
 			resJson.message = '登录成功';
+			const setCookies = resList[0].headers.getSetCookie();
+			resJson.data.cookies = setCookies;
 		}
 	} catch (error) {
 		resJson.success = false;
 		resJson.message = '系统错误';
 	}
-	res.headers.set('Content-Type', 'application/json');
+
+	const newHeaders = new Headers();
+	newHeaders.set('Content-Type', 'application/json');
 	return new NextResponse(JSON.stringify(resJson), {
 		status: 200,
-		headers: res.headers,
+		headers: newHeaders,
 	});
 };
 
