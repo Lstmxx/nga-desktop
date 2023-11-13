@@ -1,6 +1,6 @@
 import { apiHostConfig } from '@/config/host';
 import { IPlate } from '@/lib/api/plate/get-all/type';
-import { CustomResponse } from '@/lib/utils/format-response';
+import { CustomResponse } from '@/lib/utils/fetch/format-response';
 import { NextResponse } from 'next/server';
 import { http, jsTxt2Json } from '../../common';
 

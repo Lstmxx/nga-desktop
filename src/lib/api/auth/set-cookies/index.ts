@@ -1,19 +1,17 @@
 import { systemConfig } from '@/config/system';
-import { handleResponse } from '@/lib/utils/format-response';
-import { ISetCookiesReq } from './type';
+import { setCookie } from '@/lib/utils/cookie';
+import { handleFetch } from '@/lib/utils/fetch';
+import { ISetCookiesReq, ISetCookiesRes } from './type';
 
 const API = `${systemConfig.host}/api/auth/set-cookies`;
 
 export default async function setCookies(requestData: ISetCookiesReq) {
-	const res = await fetch(API, {
+	const { data } = await handleFetch<ISetCookiesRes>(API, {
 		method: 'post',
 		body: JSON.stringify(requestData),
 	});
 
-	console.log('headers', res.headers);
-
-	const { data } = await handleResponse<null>(res);
-
+	setCookie(data.cookies);
 	console.log(data);
 
 	return data;

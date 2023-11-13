@@ -1,6 +1,6 @@
 import { systemConfig } from '@/config/system';
+import { handleFetch } from '@/lib/utils/fetch';
 import { encryptPassword } from '../../../utils/encrypt';
-import { handleResponse } from '../../../utils/format-response';
 import { ILoginForm, ILoginReq, ILoginRes } from './type';
 
 const API = `${systemConfig.host}/api/auth/login`;
@@ -19,12 +19,10 @@ export default async function login(requestData: ILoginForm & { rid: string }) {
 		prid: `P${(Math.random() + '').substring(2)}`,
 		password: await encryptPassword(requestData.password),
 	};
-	const res = await fetch(API, {
+	const { data } = await handleFetch<ILoginRes>(API, {
 		method: 'post',
 		body: JSON.stringify(req),
 	});
-
-	const { data } = await handleResponse<ILoginRes>(res);
 
 	return data;
 }

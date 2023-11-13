@@ -1,5 +1,5 @@
 import { apiHostConfig } from '@/config/host';
-import { CustomResponse } from '@/lib/utils/format-response';
+import { CustomResponse } from '@/lib/utils/fetch/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { http } from '../../common';
 

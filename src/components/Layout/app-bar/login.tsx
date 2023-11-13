@@ -1,3 +1,5 @@
+'use client';
+
 import LoginDialog from '@/components/login-modal';
 import { ILoginRes } from '@/lib/api/auth/login/type';
 import { useUserStore } from '@/store/user';
@@ -12,6 +14,7 @@ const LoginButton = () => {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
 	return (
 		<>
 			<Button className='text-redwood-600' onClick={handleOpenDialog}>

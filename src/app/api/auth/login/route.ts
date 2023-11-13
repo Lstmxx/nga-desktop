@@ -1,5 +1,5 @@
 import { ILoginRes } from '@/lib/api/auth/login/type';
-import { CustomResponse } from '@/lib/utils/format-response';
+import { CustomResponse } from '@/lib/utils/fetch/format-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { http, jsTxt2Json } from '../../common';
 
