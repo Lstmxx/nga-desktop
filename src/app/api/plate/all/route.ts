@@ -1,7 +1,7 @@
 import { apiHostConfig } from '@/config/host';
 import { IPlate } from '@/lib/api/plate/get-all/type';
 import { CustomResponse } from '@/lib/utils/fetch/format-response';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { http, jsTxt2Json } from '../../common';
 
 const headers = {
@@ -44,9 +44,9 @@ const convert2List = (data: Record<string, IPlate>): IPlate[] => {
 	return res;
 };
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
 	const options: RequestInit = {
-		headers,
+		headers: Object.assign({}, headers, { Cookie: req.headers.get('Cookie') || '' }),
 		referrer: 'https://bbs.nga.cn/',
 		referrerPolicy: 'unsafe-url',
 	};
@@ -79,3 +79,5 @@ export const GET = async () => {
 		headers: { 'Content-Type': 'application/json' },
 	});
 };
+
+export const dynamic = 'force-static';

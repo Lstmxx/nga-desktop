@@ -7,7 +7,7 @@ interface UserState {
 }
 
 interface Action {
-	updateUser: (user: ILoginRes) => void;
+	updateUser: (user: ILoginRes | null) => void;
 	initUser: () => Promise<void>;
 }
 

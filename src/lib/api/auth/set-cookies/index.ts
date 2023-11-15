@@ -10,9 +10,9 @@ export default async function setCookies(requestData: ISetCookiesReq) {
 		method: 'post',
 		body: JSON.stringify(requestData),
 	});
+	const cookie = data.cookies.map((cookie) => cookie.split(';')[0]).join(';');
+	console.log('cookie', cookie);
+	setCookie(cookie);
 
-	setCookie(data.cookies);
-	console.log(data);
-
-	return data;
+	return null;
 }

@@ -1,6 +1,6 @@
 import { ISetCookiesReq, ISetCookiesRes } from '@/lib/api/auth/set-cookies/type';
 import { CustomResponse } from '@/lib/utils/fetch/format-response';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import xmljs from 'xml-js';
 import { http } from '../../common';
 
@@ -76,8 +76,14 @@ export const POST = async (req: NextRequest) => {
 	}
 
 	const newHeaders = new Headers();
+	const cookies = resList[0].headers.getSetCookie();
+	cookies.forEach((cookie) => {
+		newHeaders.append('Set-Cookie', cookie);
+	});
 	newHeaders.set('Content-Type', 'application/json');
-	return new NextResponse(JSON.stringify(resJson), {
+	newHeaders.set('Access-Control-Allow-Credentials', 'true');
+	newHeaders.set('Access-Control-Allow-Origin', 'https://localhost:3000');
+	return new Response(JSON.stringify(resJson), {
 		status: 200,
 		headers: newHeaders,
 	});

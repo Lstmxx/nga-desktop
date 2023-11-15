@@ -3,18 +3,26 @@
 import { getCookie } from '../cookie';
 import { handleResponse } from './format-response';
 
-const handleSetCookies = async (headers: HeadersInit) => {
+const handleSetCookies = async (headers: Headers, body: string) => {
 	const cookie = await getCookie();
-	headers = Object.assign({}, headers, { cookie: cookie.join('') });
-	return headers;
+	headers.append('Authorization', cookie);
+	console.log('cookie', cookie);
+	return [headers, JSON.stringify({ ...JSON.parse(body || '{}'), token: cookie })];
 };
 
-export const handleFetch = async <T>(...args: Parameters<typeof fetch>) => {
-	let [input, init] = args;
+export const handleFetch = async <T>(
+	...args: [...Parameters<typeof fetch>, isSetCookie?: boolean]
+) => {
+	let [input, init, isSetCookie = false] = args;
 	if (!init) {
 		init = {};
 	}
-	init.headers = await handleSetCookies(init.headers || {});
+	if (isSetCookie) {
+		[init.headers, init.body] = (await handleSetCookies(
+			new Headers(init.headers || {}),
+			(init.body as any) || '{}'
+		)) as any;
+	}
 	const response = await fetch(input, init);
 	return handleResponse<T>(response);
 };

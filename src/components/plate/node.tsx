@@ -21,7 +21,7 @@ export default function Node(props: NodeProps) {
 		>
 			<img
 				className='h-10 w-10 rounded-full bg-redwood-300 mr-2'
-				src={`${assetHostConfig.icon}/${props.node.fid}u.png?${Math.random()}`}
+				src={`${assetHostConfig.icon}/${props.node.fid}u.png`}
 				referrerPolicy='no-referrer'
 				alt=''
 			/>
